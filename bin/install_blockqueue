@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Install script for BlockQueue binary
+# This builds BlockQueue from source and places it in rendezvous/bin/
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+BIN_DIR="$PROJECT_ROOT/rendezvous/bin"
+BLOCKQUEUE_REPO="https://github.com/yudhasubki/blockqueue.git"
+
+echo "=== BlockQueue Installation ==="
+echo ""
+
+# Check for Go
+if ! command -v go &> /dev/null; then
+    echo "Error: Go is not installed"
+    echo "Please install Go 1.19+ from https://golang.org/dl/"
+    exit 1
+fi
+
+echo "Go version: $(go version)"
+echo ""
+
+# Create bin directory
+mkdir -p "$BIN_DIR"
+
+# Check if blockqueue already exists
+if [ -f "$BIN_DIR/blockqueue" ]; then
+    echo "BlockQueue binary already exists at $BIN_DIR/blockqueue"
+    echo -n "Rebuild? (y/N) "
+    read -r response
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+        echo "Skipping build"
+        exit 0
+    fi
+fi
+
+# Build in temp directory
+TEMP_DIR=$(mktemp -d)
+trap "rm -rf $TEMP_DIR" EXIT
+
+echo "Cloning BlockQueue repository..."
+git clone --depth 1 "$BLOCKQUEUE_REPO" "$TEMP_DIR/blockqueue"
+
+echo ""
+echo "Building BlockQueue..."
+cd "$TEMP_DIR/blockqueue"
+go build -o blockqueue ./cmd/blockqueue
+
+echo ""
+echo "Installing to $BIN_DIR..."
+cp blockqueue "$BIN_DIR/"
+chmod +x "$BIN_DIR/blockqueue"
+
+echo ""
+echo "=== Installation Complete ==="
+echo ""
+echo "BlockQueue binary: $BIN_DIR/blockqueue"
+echo "Size: $(du -h "$BIN_DIR/blockqueue" | cut -f1)"
+echo ""
+echo "You can now run:"
+echo "  ./bin/shortbus run"

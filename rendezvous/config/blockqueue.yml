@@ -1,0 +1,18 @@
+http:
+  port: 8080
+  shutdown: "30s"
+  driver: "sqlite"
+logging:
+  level: "info"
+  type: "json"
+sqlite:
+  db_name: "blockqueue"
+  busy_timeout: 5000
+job:
+  producer_partition: 16
+  consumer_partition: 16
+etcd:
+  path: "etcdb"
+  sync: false
+metric:
+  enable: false
