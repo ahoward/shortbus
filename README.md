@@ -26,6 +26,23 @@ by developing on the shortbus, you can design event driven systems from the
 get go, and not worry about how messages will be delivered in the future. they
 will always be local.
 
+WHY? (especially for AI development 🤖)
+=======================================
+modern development in the ai ecosystem requires coordination between a variety
+of complex and independent systems. msg passing is ideal for this type of
+architecture but starting out with an event/msgbus system is complex.
+
+shortbus is the KISS solution for that. 🚀
+
+start local. assume local. when you eventually get decentralized and
+decoupled, your system doesn't need to chase - it's already architected for
+message passing from day one.
+
+loose coupling is way better than being poly. 😉
+
+(for ai agents, microservices, distributed systems, or just clean
+architecture - shortbus keeps it simple while you build complex things.)
+
 INSTALLATION
 ============
   git clone https://github.com/ahoward/shortbus.git
